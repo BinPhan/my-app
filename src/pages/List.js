@@ -1,33 +1,42 @@
 import classes from './List.module.css'
-
+import UserDataService from '../services/user.service'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 
 function Home(params) {
 
-    const fakeData = [
-        { id: "1", username: "1", email: "2" },
-        { id: "2", username: "1", email: "2" },
-        { id: "3", username: "1", email: "2" },
-        { id: "4", username: "1", email: "2" },
-        { id: "5", username: "1", email: "2" },
-        { id: "6", username: "1", email: "2" },
-        { id: "7", username: "1", email: "2" },
-        { id: "8", username: "1", email: "2" },
-    ]
-
     let [search, inputSearch] = useState('')
+
+    let [data, setData] = useState([])
 
     function onChangeSearch(event) {
         inputSearch(event.target.value)
     }
 
     function sendSearch() {
-        console.log(search);
+        UserDataService.getAll(search).then(res => {
+            setData([...res.data])
+        })
+
     }
+
+    function handleDelete(id) {
+        UserDataService.delete(id).then(res => {
+            UserDataService.getAll().then(res => {
+                setData([...res.data])
+            })
+        })
+    }
+
+    useEffect(() => {
+        UserDataService.getAll().then(res => {
+            setData([...res.data])
+        })
+    }, [])
+
 
     return (
         <div className='m-3'>
@@ -51,7 +60,7 @@ function Home(params) {
                         <th>Action</th>
                     </tr>
                     {
-                        fakeData.map(item => {
+                        data.map(item => {
                             return (
                                 <tr key={item.id}>
                                     <th>{item.username}</th>
@@ -61,6 +70,10 @@ function Home(params) {
                                             <Button>Edit</Button>
                                         </Link>
                                     </th>
+                                    <th>
+                                        <Button onClick={() => handleDelete(item.id)}>Delete</Button>
+                                    </th>
+
                                 </tr>
                             )
                         })

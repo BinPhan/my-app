@@ -8,6 +8,7 @@ import {
     Link
 } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Edit from "./pages/Edit";
 
 function App(props) {
 
@@ -19,6 +20,8 @@ function App(props) {
                 <Route path="/" element={<List></List>}>
                 </Route>
                 <Route path="/new" element={<New></New>}>
+                </Route>
+                <Route path="/edit/:id" element={<Edit></Edit>}>
                 </Route>
             </Routes>
         </div>
